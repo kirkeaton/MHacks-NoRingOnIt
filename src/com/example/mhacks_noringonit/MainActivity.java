@@ -6,8 +6,10 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
@@ -97,10 +99,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		/* Creates audio manager object */ 
 		AudioManager audioManager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
-		
-
 	}
-	
 	
 		/* Turns Ringer to normal mode */ 
 	protected void setRingerOn(AudioManager myAudioManager)
