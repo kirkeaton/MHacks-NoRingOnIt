@@ -1,4 +1,4 @@
-package com.example.ringtoggle;
+package com.example.mhacks_noringonit;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
