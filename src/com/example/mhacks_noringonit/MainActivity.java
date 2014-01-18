@@ -1,5 +1,7 @@
 package com.example.mhacks_noringonit;
 
+// Testing the commenting
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
