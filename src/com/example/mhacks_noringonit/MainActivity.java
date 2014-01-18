@@ -23,7 +23,7 @@ import android.view.View;
 public class MainActivity extends Activity {
 
 	@SuppressLint("InlinedApi")
-	public void addEvent(Activity ac) {
+	public void addEvent(View view) {
 		Log.d("third", "third");
 		Intent intent = new Intent(Intent.ACTION_INSERT);
 		intent.setType("vnd.android.cursor.item/event");
@@ -48,13 +48,13 @@ public class MainActivity extends Activity {
 		intent.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
 
 		Log.d("fifth", "fifth");
-		ac.startActivity(intent);
+		startActivity(intent);
 	}
 
 	@SuppressLint("NewApi")
-	public List<CalEvent> getEvents(Activity ac) {
+	public List<CalEvent> getEvents(View view) {
 		List<CalEvent> events = null;
-		
+				
 		int year, month, date;
 
 		Calendar begin = Calendar.getInstance();
@@ -70,9 +70,11 @@ public class MainActivity extends Activity {
 		String[] projection = new String[] { Events._ID, Events.TITLE,
 				Events.DTSTART, Events.DTEND, Events.DURATION };
 
+
+		
 		Cursor cursor = Instances.query(getContentResolver(), projection,
 				begin.getTimeInMillis(), end.getTimeInMillis());
-
+		
 		cursor.moveToFirst();
 
 		do {

@@ -50,7 +50,7 @@
         android:layout_marginTop="41dp"
         android:background="@drawable/synctocal"
         android:contentDescription="@string/todo"
-        android:onClick="AddingCalendar" />
+        android:onClick="getEvents"/>
 
     <ImageButton
         android:id="@+id/imageButton2"
@@ -61,7 +61,7 @@
         android:layout_marginTop="41dp"
         android:background="@drawable/plussign"
         android:contentDescription="@string/todo"
-        android:onClick="AddingCalendar" />
+        android:onClick="addEvent" />
 
     <EditText
         android:id="@+id/editText1"
