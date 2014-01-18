@@ -15,6 +15,13 @@ public class CalEvent {
 		this.start = start;
 		this.end = end;
 	}
+	
+	public CalEvent(CalEvent ce)
+	{
+		this.title = ce.title;
+		this.start = ce.start;
+		this.end = ce.end;
+	}
 
 	public String getTitle() {
 		return this.title;
