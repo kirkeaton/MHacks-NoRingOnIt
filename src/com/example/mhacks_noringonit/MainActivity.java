@@ -95,5 +95,23 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		/* Creates audio manager object */ 
+		AudioManager audioManager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+		
+
+	}
+	
+	
+		/* Turns Ringer to normal mode */ 
+	protected void setRingerOn(AudioManager myAudioManager)
+	{
+	      myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);	
+	}
+	
+	/* Turns ringer to silent mode */ 
+	protected void setRingerOff(AudioManager myAudioManager)
+	{
+	      myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+	
 	}
 }
