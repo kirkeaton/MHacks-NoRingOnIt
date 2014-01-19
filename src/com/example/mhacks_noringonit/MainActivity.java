@@ -1,10 +1,12 @@
 package com.example.mhacks_noringonit;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -12,16 +14,12 @@ import android.os.Bundle;
 import android.provider.CalendarContract.Events;
 import android.provider.CalendarContract.Instances;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-
-
-
-
-// Testing the commenting
 
 public class MainActivity extends Activity {
 
+	private AudioManager audioManager;
+	
 	public void addEvent(View view) {
 		Intent intent = new Intent(Intent.ACTION_INSERT);
 		intent.setType("vnd.android.cursor.item/event");
@@ -30,7 +28,7 @@ public class MainActivity extends Activity {
 
 	@SuppressLint("NewApi")
 	public List<CalEvent> getEvents(View view) {
-		List<CalEvent> events = null;
+		List<CalEvent> events = new ArrayList<CalEvent>();
 				
 		int year, month, date;
 
@@ -76,6 +74,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		audioManager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
 	}
 	
 		/* Turns Ringer to normal mode */ 
@@ -88,6 +87,5 @@ public class MainActivity extends Activity {
 	protected void setRingerOff(AudioManager myAudioManager)
 	{
 	      myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-	
 	}
 }
