@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.provider.CalendarContract.Events;
 import android.provider.CalendarContract.Instances;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends Activity {
@@ -59,14 +61,14 @@ public class MainActivity extends Activity {
 			do {
 				CalEvent event = new CalEvent();
 				event.setTitle(cursor.getString(cursor.getColumnIndex("title")));
-				event.setStartTime(cursor.getColumnIndex("dtstart"));
+				event.setStartTime(cursor.getLong(cursor.getColumnIndex("dtstart")));
 
 
 				if (TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex("duration")))) {
-					event.setEndTime(cursor.getColumnIndex("dtend"));
+					event.setEndTime(cursor.getLong(cursor.getColumnIndex("dtend")));
 					event.setIsDuration(false);
 				} else {
-					event.setEndTime(cursor.getColumnIndex("duration"));
+					event.setEndTime(cursor.getLong(cursor.getColumnIndex("duration")));
 					event.setIsDuration(true);
 				}
 				events.add(event);
@@ -77,33 +79,29 @@ public class MainActivity extends Activity {
 		 * Figure out when it starts, subtract from current time, and put
 		 * that in the wait 
 		 */
+		
 		for (i=0;i<events.size();i++)
 		{
-			long  eventStartTime; 
+			long eventStartTime; 
 			long eventEndTime; 
 			long eventDuration;
 			long difference; 
 			long time = System.currentTimeMillis();
 
-			/*Grabbing the event start time in milliseconds*/ 
+			
+			/* Grabbing the event start time in milliseconds */
 			eventStartTime=events.get(i).getStartTime();
 			eventEndTime=events.get(i).getEndTime(); 
 			
 			eventDuration = eventEndTime - eventStartTime; 
 			
-			/*Getting the countdown time until  the event starts */ 
+			/*Getting the countdown time until  the event starts */
 			difference = eventStartTime - time;
 			
-			if (difference>0)
-				setRingerOff(audioManager,difference,eventDuration);
-			
-			// Checking if should turn ringer back on once event done
-			if ((eventEndTime - time) <= 0) {
-				setRingerOn(audioManager);
-			}
-			
-			
-			
+			while(System.currentTimeMillis() < eventStartTime);			
+			setRingerOff(audioManager);
+			while(System.currentTimeMillis() < eventEndTime);
+			setRingerOn(audioManager);
 			
 		}
 
@@ -136,16 +134,16 @@ public class MainActivity extends Activity {
 	
 	
 	/* Turns ringer to silent mode */ 
-	protected void setRingerOff(final AudioManager myAudioManager, long timeTillOff,long eventDuration)
+	protected void setRingerOff(final AudioManager myAudioManager)
 	{
 		  final Runnable ringer = new Runnable (){
 		    public void run() {  myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);}	
 
 		  };
 		  
-		  final ScheduledFuture<?> ringerHandle = scheduler.scheduleAtFixedRate(ringer,timeTillOff,600000,MILLISECONDS);
+		  final ScheduledFuture<?> ringerHandle = scheduler.scheduleAtFixedRate(ringer,10,10,MILLISECONDS);
 		  scheduler.schedule (new Runnable() {
 			  public void run() { ringerHandle.cancel(true); }
-		  }, eventDuration, MILLISECONDS);
+		  }, 60 * 60, MILLISECONDS);
 	}
 }

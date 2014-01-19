@@ -35,7 +35,7 @@ public class CalEvent {
 	}
 
 	public long getStartTime() {
-		return this.start;
+		return start;
 	}
 
 	public void setStartTime(long start) {
@@ -43,7 +43,7 @@ public class CalEvent {
 	}
 
 	public long getEndTime() {
-		return this.end;
+		return end;
 	}
 
 	public void setEndTime(long end) {
