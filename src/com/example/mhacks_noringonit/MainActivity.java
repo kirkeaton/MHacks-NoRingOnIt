@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.provider.CalendarContract.Events;
 import android.provider.CalendarContract.Instances;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends Activity {
@@ -35,11 +34,11 @@ public class MainActivity extends Activity {
 	@SuppressLint("NewApi")
 	public List<CalEvent> getEvents(View view) {
 		List<CalEvent> events = new ArrayList<CalEvent>();
-				
+		int i = 0; 
 		int year, month, date;
-
 		Calendar begin = Calendar.getInstance();
 		Calendar end = Calendar.getInstance();
+		
 
 		year = Calendar.getInstance().get(Calendar.YEAR);
 		month = Calendar.getInstance().get(Calendar.MONTH);
@@ -70,22 +69,44 @@ public class MainActivity extends Activity {
 					event.setEndTime(cursor.getColumnIndex("duration"));
 					event.setIsDuration(true);
 				}
-				
-				if(events.contains(event) != true)
-				{
-					events.add(event);
-				}
-				else
-				{
-					Log.d("already exists", "already exists");
-				}
-				
+				events.add(event);
 			} while (cursor.moveToNext());
 		}
 		
-		
-		
-		setRingerOn(audioManager);
+		/*For every event in the list, iterate through 
+		 * Figure out when it starts, subtract from current time, and put
+		 * that in the wait 
+		 */
+		for (i=0;i<events.size();i++)
+		{
+			long  eventStartTime; 
+			long eventEndTime; 
+			long eventDuration;
+			long difference; 
+			long time = System.currentTimeMillis();
+
+			/*Grabbing the event start time in milliseconds*/ 
+			eventStartTime=events.get(i).getStartTime();
+			eventEndTime=events.get(i).getEndTime(); 
+			
+			eventDuration = eventEndTime - eventStartTime; 
+			
+			/*Getting the countdown time until  the event starts */ 
+			difference = eventStartTime - time;
+			
+			if (difference>0)
+				setRingerOff(audioManager,difference,eventDuration);
+			
+			// Checking if should turn ringer back on once event done
+			if ((eventEndTime - time) <= 0) {
+				setRingerOn(audioManager);
+			}
+			
+			
+			
+			
+		}
+
 		
 		return events;		
 	}
@@ -107,16 +128,24 @@ public class MainActivity extends Activity {
 
 		  };
 		  
-		  final ScheduledFuture<?> ringerHandle = scheduler.scheduleAtFixedRate(ringer,10,10,SECONDS);
+		  final ScheduledFuture<?> ringerHandle = scheduler.scheduleAtFixedRate(ringer,10,10,MILLISECONDS);
 		  scheduler.schedule (new Runnable() {
 			  public void run() { ringerHandle.cancel(true); }
-		  }, 60 * 60, SECONDS);
+		  }, 60 * 60, MILLISECONDS);
 	}
 	
 	
 	/* Turns ringer to silent mode */ 
-	protected void setRingerOff(AudioManager myAudioManager)
+	protected void setRingerOff(final AudioManager myAudioManager, long timeTillOff,long eventDuration)
 	{
-	      myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+		  final Runnable ringer = new Runnable (){
+		    public void run() {  myAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);}	
+
+		  };
+		  
+		  final ScheduledFuture<?> ringerHandle = scheduler.scheduleAtFixedRate(ringer,timeTillOff,600000,MILLISECONDS);
+		  scheduler.schedule (new Runnable() {
+			  public void run() { ringerHandle.cancel(true); }
+		  }, eventDuration, MILLISECONDS);
 	}
 }
