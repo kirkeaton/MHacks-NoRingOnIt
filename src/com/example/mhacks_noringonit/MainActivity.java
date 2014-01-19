@@ -1,8 +1,13 @@
 package com.example.mhacks_noringonit;
+import static java.util.concurrent.TimeUnit.*;
+
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,7 +26,7 @@ public class MainActivity extends Activity {
 
 	private AudioManager audioManager;
 	
-	public void addEvent(View view) {
+	public void 		addEvent(View view) {
 		Intent intent = new Intent(Intent.ACTION_INSERT);
 		intent.setType("vnd.android.cursor.item/event");
 		startActivity(intent);
@@ -77,6 +82,11 @@ public class MainActivity extends Activity {
 				
 			} while (cursor.moveToNext());
 		}
+		
+		
+		
+		setRingerOn(audioManager);
+		
 		return events;		
 	}
 
@@ -88,10 +98,21 @@ public class MainActivity extends Activity {
 	}
 	
 		/* Turns Ringer to normal mode */ 
-	protected void setRingerOn(AudioManager myAudioManager)
+	
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1); 
+	protected void setRingerOn(final AudioManager myAudioManager)
 	{
-	      myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);	
+		  final Runnable ringer = new Runnable (){
+		    public void run() {  myAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);}	
+
+		  };
+		  
+		  final ScheduledFuture<?> ringerHandle = scheduler.scheduleAtFixedRate(ringer,10,10,SECONDS);
+		  scheduler.schedule (new Runnable() {
+			  public void run() { ringerHandle.cancel(true); }
+		  }, 60 * 60, SECONDS);
 	}
+	
 	
 	/* Turns ringer to silent mode */ 
 	protected void setRingerOff(AudioManager myAudioManager)
