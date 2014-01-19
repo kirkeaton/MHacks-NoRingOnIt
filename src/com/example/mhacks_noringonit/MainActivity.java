@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.CalendarContract.Events;
 import android.provider.CalendarContract.Instances;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends Activity {
@@ -64,7 +65,16 @@ public class MainActivity extends Activity {
 					event.setEndTime(cursor.getColumnIndex("duration"));
 					event.setIsDuration(true);
 				}
-				events.add(event);
+				
+				if(events.contains(event) != true)
+				{
+					events.add(event);
+				}
+				else
+				{
+					Log.d("already exists", "already exists");
+				}
+				
 			} while (cursor.moveToNext());
 		}
 		return events;		
