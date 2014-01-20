@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 		month = Calendar.getInstance().get(Calendar.MONTH);
 		date = Calendar.getInstance().get(Calendar.DATE);
 
-		begin.set(year, month, date, 0, 0);
+		begin.setTimeInMillis(System.currentTimeMillis());
 		end.set(year, month, date, 23, 59);
 
 		String[] projection = new String[] { Events._ID, Events.TITLE,
